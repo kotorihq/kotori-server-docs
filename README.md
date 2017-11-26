@@ -17,6 +17,7 @@
 ## Links
 
 - Documentation(ReDoc): https://kotorihq.github.io/kotori-server-docs/
+- SwaggerUI: https://kotorihq.github.io/kotori-server-docs/swagger-ui/
 - Look full spec:
     + JSON https://kotorihq.github.io/kotori-server-docs/swagger.json
     + YAML https://kotorihq.github.io/kotori-server-docs/swagger.yaml

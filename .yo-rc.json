@@ -6,6 +6,6 @@
     "repo": "kotorihq/kotori-server-docs",
     "splitSpec": false,
     "samples": true,
-    "installSwaggerUI": false
+    "installSwaggerUI": true
   }
 }
