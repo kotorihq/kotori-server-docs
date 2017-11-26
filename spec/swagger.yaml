@@ -2,22 +2,26 @@ swagger: '2.0'
 info:
   version: v1
   title: Kotori
-  description: REST API for Kotori
+  description: |-
+    REST API for Kotori.
+
+    It's _work in progress_ at the moment.
   contact:
     name: frohikey
   license:
     name: MIT
     url: 'https://raw.githubusercontent.com/kotorihq/kotori-server/master/LICENSE'
+host: localhost:6502
 basePath: /
 paths:
   /api/instance:
     get:
       tags:
         - Instance
-      summary: Get instance information
+      summary: Get instance information.
       description: >-
         Just a simple method for testing purposes. It returns information about
-        instance which you already know :)
+        instance which you already know (in most cases).
       operationId: ApiInstanceGet
       consumes: []
       produces:
@@ -37,9 +41,12 @@ paths:
   /api/projects:
     get:
       tags:
-        - Master
+        - Projects
       summary: Get projects
-      description: Gets a collection of existing projects in the instance.
+      description: |-
+        Gets a collection of existing projects in the instance.
+
+        Master key required.
       operationId: ApiProjectsGet
       consumes: []
       produces:
@@ -53,6 +60,12 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Project'
+          examples:
+            application/json:
+              - id: my-blog
+                name: My Blog
+              - id: your-blog
+                name: Your Blog
         '401':
           description: Unauthorized
         '403':
@@ -838,9 +851,9 @@ definitions:
   Project:
     type: object
     properties:
-      name:
+      id:
         type: string
-      identifier:
+      name:
         type: string
   ProjectKey:
     type: object
@@ -907,9 +920,9 @@ securityDefinitions:
     name: masterKey
     in: header
     type: apiKey
-    description: Master key
+    description: Master operations like managing projects.
   projectKey:
     name: projectKey
     in: header
     type: apiKey
-    description: Project key
+    description: Operations in the context of one project.
