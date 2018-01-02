@@ -21,7 +21,7 @@ paths:
       summary: Get instance information.
       description: >-
         Just a simple method for testing purposes. It returns information about
-        instance which you already know (in most cases).
+        instance which you already know (if you are not drunk).
       operationId: ApiInstanceGet
       consumes: []
       produces:
