@@ -48,9 +48,7 @@ paths:
       operationId: ApiProjectsGet
       consumes: []
       produces:
-        - text/plain
         - application/json
-        - text/json
       responses:
         '200':
           description: A collection of the projects
@@ -91,7 +89,7 @@ paths:
             $ref: '#/definitions/CreateProjectRequest'
       responses:
         '201':
-          description: Project created
+          description: Project location
           schema:
             $ref: '#/definitions/CreateProjectResult'
         '401':
@@ -866,8 +864,6 @@ definitions:
     example:
       id: my-blog
       url: /api/projects/my-blog
-
-
   Project:
     type: object
     properties:
@@ -875,6 +871,8 @@ definitions:
         type: string
       name:
         type: string
+
+
   ProjectKey:
     type: object
     properties:
