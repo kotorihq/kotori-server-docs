@@ -25,9 +25,7 @@ paths:
       operationId: ApiInstanceGet
       consumes: []
       produces:
-        - text/plain
         - application/json
-        - text/json
       responses:
         '200':
           description: Instance information
@@ -44,7 +42,7 @@ paths:
         - Projects
       summary: Get projects
       description: |-
-        Gets a collection of existing projects in the instance.
+        Gets a collection of existing projects.
 
         Master key required.
       operationId: ApiProjectsGet
@@ -78,9 +76,8 @@ paths:
       tags:
         - Projects
       summary: Create project
-      description: >-
-        Creates the project with an unique identifier which should be a valid
-        slug.
+      description: |-
+        Creates the project.
 
         Master key required.
       operationId: ApiProjectsPost
@@ -94,9 +91,9 @@ paths:
             $ref: '#/definitions/CreateProjectRequest'
       responses:
         '201':
-          description: The operation result message
+          description: Project created
           schema:
-            type: string
+            $ref: '#/definitions/CreateProjectResult'
         '401':
           description: Unauthorized
         '403':
@@ -858,6 +855,19 @@ definitions:
     example:
       id: "my-blog"
       name: "My blog"
+  CreateProjectResult:
+    description: Create project result.
+    type: object
+    properties:
+      id: 
+        type: string
+      name:
+        type: string
+    example:
+      id: my-blog
+      url: /api/projects/my-blog
+
+
   Project:
     type: object
     properties:
