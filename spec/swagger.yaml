@@ -18,7 +18,7 @@ paths:
     get:
       tags:
         - Instance
-      summary: Get instance information.
+      summary: Get instance information
       description: >-
         Just a simple method for testing purposes. It returns information about
         instance which you already know (if you are not drunk).
@@ -55,13 +55,15 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Project'
+              $ref: '#/definitions/Projects'
           examples:
             application/json:
-              - id: my-blog
-                name: My Blog
-              - id: your-blog
-                name: Your Blog
+              - count: 2
+                items:
+                - name: My blog
+                  identifier: my-blog
+                - name: Your blog
+                  identifier: your-blog
         '401':
           description: Unauthorized
         '403':
@@ -877,6 +879,14 @@ definitions:
         pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       name:
         type: string
+  Projects:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/Project'
   UpsertProjectRequest:
     description: Upsert project.
     type: object
@@ -952,12 +962,12 @@ definitions:
         type: string
 securityDefinitions:
   masterKey:
-    name: masterKey
+    name: x-master-key
     in: header
     type: apiKey
     description: Master operations like managing projects.
   projectKey:
-    name: projectKey
+    name: x-project-key
     in: header
     type: apiKey
     description: Operations in the context of one project.
