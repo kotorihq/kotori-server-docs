@@ -60,10 +60,10 @@ paths:
             application/json:
               - count: 2
                 items:
-                - name: My blog
-                  identifier: my-blog
-                - name: Your blog
-                  identifier: your-blog
+                - id: my-blog
+                  name: My blog
+                - id: your-blog
+                  name: Your blog
         '401':
           description: Unauthorized
         '403':
