@@ -141,6 +141,15 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            aaplication/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
         '500':
           description: Internal server error
       security:
