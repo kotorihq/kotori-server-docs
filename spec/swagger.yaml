@@ -866,7 +866,7 @@ definitions:
       id: 
         type: string
         pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
-      name:
+      url:
         type: string
     example:
       id: my-blog
