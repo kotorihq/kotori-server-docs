@@ -159,8 +159,7 @@ paths:
         - Projects
       summary: Upsert project
       description: |-
-        Updates project. Identifier cannot by changed. You can only change a
-        name at the moment.
+        Creates/updates project.
 
         Master key required.
       operationId: ApiProjectsByProjectIdPut
