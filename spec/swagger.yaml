@@ -213,12 +213,21 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       responses:
-        '200':
+        '204':
           description: Project deleted
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            aaplication/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
         '500':
           description: Internal server error
       security:
