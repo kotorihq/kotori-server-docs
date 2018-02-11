@@ -53,9 +53,8 @@ paths:
         '200':
           description: A collection of the projects
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Projects'
+            type: object
+            $ref: '#/definitions/Projects'
           examples:
             application/json:
               - count: 2
@@ -94,12 +93,16 @@ paths:
           description: Project created
           schema:
             $ref: '#/definitions/CreateProjectResult'
+          headers: 
+            Location: 
+              description: Project location
+              type: string
         '400':
           description: Error
           schema:
             $ref: '#/definitions/Error'
           examples:
-            aaplication/json:
+            application/json:
               message: Project already exists.
               type: KotoriCore.Exceptions.KotoriProjectException
               identifier: my-blog
@@ -146,7 +149,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
           examples:
-            aaplication/json:
+            application/json:
               message: Project not found.
               type: KotoriCore.Exceptions.KotoriProjectException
               identifier: my-imaginary-blog
@@ -184,6 +187,10 @@ paths:
           description: Project created
           schema:
             $ref: '#/definitions/CreateProjectResult'
+          headers: 
+            Location: 
+              description: Project location
+              type: string
         '401':
           description: Unauthorized
         '403':
@@ -224,7 +231,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
           examples:
-            aaplication/json:
+            application/json:
               message: Project not found.
               type: KotoriCore.Exceptions.KotoriProjectException
               identifier: my-imaginary-blog
@@ -251,23 +258,31 @@ paths:
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       responses:
         '200':
-          description: A collection of project keys
+          description: A collection of the project keys
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/ProjectKey'
+            type: object
+            $ref: '#/definitions/ProjectKeys'
           examples:
             application/json:
-              - key: yikes
-                isReadonly: false
-              - key: ooops
-                isReadonly: true
+              - count: 2
+                items:
+                - key: key-1
+                  isReadonly: false
+                - key: key-2
+                  isReadonly: true
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
         '404':
-          description: Project not Found
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
         '500':
           description: Internal server error
       security:
@@ -297,6 +312,10 @@ paths:
           description: Project key created
           schema:
             $ref: '#/definitions/CreateProjectKeyResult'
+          headers: 
+            Location: 
+              description: Project key location
+              type: string
         '401':
           description: Unauthorized
         '403':
@@ -306,7 +325,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
           examples:
-            aaplication/json:
+            application/json:
               message: Project not found.
               type: KotoriCore.Exceptions.KotoriProjectException
               identifier: my-imaginary-blog
@@ -952,8 +971,16 @@ definitions:
       isReadonly:
         type: boolean
     example:
-      key: yikes
+      key: key-1
       isReadonly: false
+  ProjectKeys:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/ProjectKey'
   Error:
     description: Error
     type: object
