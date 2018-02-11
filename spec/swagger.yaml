@@ -76,7 +76,7 @@ paths:
         - Projects
       summary: Create project
       description: |-
-        Creates the project.
+        Create a new project.
 
         Master key required.
       operationId: ApiProjectsPost
@@ -162,7 +162,7 @@ paths:
         - Projects
       summary: Upsert project
       description: |-
-        Creates/updates project.
+        Create a new project or update an existing one.
 
         Master key required.
       operationId: ApiProjectsByProjectIdPut
@@ -204,7 +204,7 @@ paths:
         - Projects
       summary: Delete project
       description: |-
-        Deletes the project. Do not be worry too much. Non empty projects cannot
+        Delete the project. Do not be worry too much. Non empty projects cannot
         be deleted.
 
         Master key required.
@@ -339,43 +339,37 @@ paths:
         - Projects
       summary: Upsert project key
       description: >-
-        Update an existing project key. You can just change if it's readonly or
-        not.
-      operationId: ApiProjectsByProjectIdProject-keysByKeyPut
+        Create a new key or update an existing one.
+      operationId: ApiProjectsByProjectIdProjectKeysByKeyPut
       consumes: []
       produces:
-        - text/plain
         - application/json
-        - text/json
       parameters:
         - name: projectId
           in: path
           description: Project identifier
           required: true
           type: string
-        - name: key
-          in: path
-          description: Key
-          required: true
-          type: string
-        - name: isReadonly
-          in: query
-          description: 'If set to {true} is readonly'
-          required: true
-          type: boolean
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UpsertProjectKeyRequest'
       responses:
         '200':
-          description: The operation result message
+          description: Project key updated
+        '201':
+          description: Project key created
           schema:
-            type: string
+            $ref: '#/definitions/CreateProjectKeyResult'
+          headers: 
+            Location: 
+              description: Project key location
+              type: string
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
-        '404':
-          description: Not Found
-          schema:
-            type: string
         '500':
           description: Internal server error
       security:
@@ -384,7 +378,7 @@ paths:
       tags:
         - Projects
       summary: Delete project key
-      description: Deletes an existing project key.
+      description: Delete an existing project key.
       operationId: ApiProjectsByProjectIdProject-keysByKeyDelete
       consumes: []
       produces:
@@ -914,8 +908,20 @@ definitions:
     example:
       key: key-1
       isReadonly: false
+  UpsertProjectKeyRequest:
+    description: Upsert project key
+    type: object
+    properties:
+      key:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      isReadonly:
+        type: boolean
+    example:
+      key: key-1
+      isReadonly: false
   CreateProjectKeyResult:
-    description: Create project key result
+    description: Create project key
     type: object
     properties:
       id: 
@@ -955,7 +961,7 @@ definitions:
       items:
         $ref: '#/definitions/Project'
   UpsertProjectRequest:
-    description: Upsert project.
+    description: Upsert project
     type: object
     properties:
       name:
