@@ -349,6 +349,12 @@ paths:
           required: true
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: key
+          in: path
+          description: Project key
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
           name: body
           schema:
