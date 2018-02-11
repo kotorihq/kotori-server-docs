@@ -53,7 +53,6 @@ paths:
         '200':
           description: A collection of the projects
           schema:
-            type: object
             $ref: '#/definitions/Projects'
           examples:
             application/json:
@@ -260,7 +259,6 @@ paths:
         '200':
           description: A collection of the project keys
           schema:
-            type: object
             $ref: '#/definitions/ProjectKeys'
           examples:
             application/json:
@@ -379,7 +377,7 @@ paths:
         - Projects
       summary: Delete project key
       description: Delete an existing project key.
-      operationId: ApiProjectsByProjectIdProject-keysByKeyDelete
+      operationId: ApiProjectsByProjectIdProjectKeysByKeyDelete
       consumes: []
       produces:
         - text/plain
