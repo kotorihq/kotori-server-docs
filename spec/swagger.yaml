@@ -402,6 +402,36 @@ paths:
           description: Internal server error
       security:
         - masterKey: []
+  '/api/projects/{projectId}/content':
+    post:
+      tags:
+        - Content
+      summary: Create content document type
+      description: |-
+        Create a new document type for content.
+
+        Full project key required.
+      operationId: ApiCreateContentDocumentType
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Content document type created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentTypeResult'
+          headers: 
+            Location: 
+              description: Content document type location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - projectKey: []
 definitions:
   InstanceResult:
     description: Instance result.
@@ -511,6 +541,18 @@ definitions:
       id: 
         type: string
         pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+  CreateContentDocumentTypeResult:
+    description: Create content document type result
+    type: object
+    properties:
+      id: 
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      url:
+        type: string
+    example:
+      id: movie
+      url: /api/projects/my-blog/content/document-types/movie
 securityDefinitions:
   masterKey:
     name: x-master-key
@@ -522,3 +564,8 @@ securityDefinitions:
     in: header
     type: apiKey
     description: Operations in the context of one project.
+  readonlyProjectKey:
+    name: x-project-key
+    in: header
+    type: apiKey
+    description: Operations in the context of one project (readonly).
