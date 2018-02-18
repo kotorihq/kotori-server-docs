@@ -166,7 +166,6 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
-          name: body
           schema:
             $ref: '#/definitions/UpsertProjectRequest'
       responses:
@@ -292,7 +291,6 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
-          name: body
           schema:
             $ref: '#/definitions/CreateProjectKeyRequest'
       responses:
@@ -308,15 +306,6 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-        '404':
-          description: Not found
-          schema:
-            $ref: '#/definitions/Error'
-          examples:
-            application/json:
-              message: Project not found.
-              type: KotoriCore.Exceptions.KotoriProjectException
-              identifier: my-imaginary-blog
         '500':
           description: Internal server error
       security:
@@ -346,7 +335,6 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
-          name: body
           schema:
             $ref: '#/definitions/UpsertProjectKeyRequest'
       responses:
@@ -890,25 +878,17 @@ definitions:
     description: Create project key
     type: object
     properties:
-      key:
-        type: string
-        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       isReadonly:
         type: boolean
     example:
-      key: key-1
       isReadonly: false
   UpsertProjectKeyRequest:
     description: Upsert project key
     type: object
     properties:
-      key:
-        type: string
-        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       isReadonly:
         type: boolean
     example:
-      key: key-1
       isReadonly: false
   CreateProjectKeyResult:
     description: Create project key
