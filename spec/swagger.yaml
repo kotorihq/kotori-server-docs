@@ -84,6 +84,7 @@ paths:
         - application/json
       parameters:
         - in: body
+          name: payload
           schema:
             $ref: '#/definitions/CreateProjectRequest'
       responses:
@@ -166,6 +167,7 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
+          name: payload
           schema:
             $ref: '#/definitions/UpsertProjectRequest'
       responses:
@@ -291,6 +293,7 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
+          name: payload
           schema:
             $ref: '#/definitions/CreateProjectKeyRequest'
       responses:
@@ -335,6 +338,7 @@ paths:
           type: string
           pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
         - in: body
+          name: payload
           schema:
             $ref: '#/definitions/UpsertProjectKeyRequest'
       responses:
@@ -380,7 +384,7 @@ paths:
           type: string
       responses:
         '204':
-          description: Project deleted
+          description: Project key deleted
         '401':
           description: Unauthorized
         '403':
