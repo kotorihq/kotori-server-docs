@@ -403,6 +403,48 @@ paths:
       security:
         - masterKey: []
   '/api/projects/{projectId}/content':
+    get:
+      tags:
+        - Content
+      summary: Get content document types
+      description: |-
+        Get a collection of content document types.
+
+        Readonly/Full project key required.
+      operationId: ApiProjectsByProjectIdProjectKeysGet
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: Content document types
+          schema:
+            $ref: '#/definitions/ContentDocumentTypes'
+          examples:
+            application/json:
+              - count: 2
+                items:
+                - id: movie
+                  type: content
+                  fields: []
+                - id: book
+                  type: content
+                  fields: []
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - readonlyProjectKey: []
     post:
       tags:
         - Content
@@ -519,9 +561,6 @@ definitions:
         pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
       isReadonly:
         type: boolean
-    example:
-      key: key-1
-      isReadonly: false
   ProjectKeys:
     type: object
     properties:
@@ -530,6 +569,29 @@ definitions:
         type: integer
       items:
         $ref: '#/definitions/ProjectKey'
+  ContentDocumentTypes:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/ContentDocumentType'
+  ContentDocumentType:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      type:
+        type: string
+      fields:
+        $ref: '#/definitions/DocumentTypeField'
+  DocumentTypeField:
+    type: object
+    properties:
+      todo:
+        type: string
   Error:
     description: Error
     type: object
