@@ -411,7 +411,7 @@ paths:
         Get a collection of content document types.
 
         Readonly/Full project key required.
-      operationId: ApiProjectsByProjectIdProjectKeysGet
+      operationId: ApiGetContentDocumentTypes
       consumes: []
       produces:
         - application/json
