@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: v1.2
+  version: "1.1.0-CI-20180303-1"
   title: Kotori
   description: |-
     REST API for Kotori.
