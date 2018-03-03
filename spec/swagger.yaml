@@ -687,6 +687,79 @@ paths:
           description: Internal server error
       security:
         - masterKey: []      
+  '/api/projects/{projectId}/content/{documentTypeId}/documents/{documentId}':
+    post:
+      tags:
+        - Content
+      summary: Upsert content document
+      description: |-
+        Creates or updates the content document.
+
+        Project key required.
+      operationId: ApiUpsertContentDocument
+      consumes: 
+        - text/plain
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentId
+          in: path
+          description: Content document identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: date
+          in: query
+          description: Date
+          required: false
+          type: string
+          format: date
+        - name: draft
+          in: query
+          description: Draft
+          required: false
+          type: boolean
+        - in: body
+          name: document
+          schema:
+            type: string
+            example: |-
+              ---
+              title: I've started my little blog
+              author: none other than me
+              ---
+              Yikes!
+      responses:
+        '200':
+          description: Content document updated
+        '201':
+          description: Content document created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentResult'
+          headers: 
+            Location: 
+              description: Content document location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []     
 definitions:
   InstanceResult:
     description: Instance result.
