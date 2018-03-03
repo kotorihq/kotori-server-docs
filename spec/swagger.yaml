@@ -688,7 +688,7 @@ paths:
       security:
         - masterKey: []      
   '/api/projects/{projectId}/content/{documentTypeId}/documents/{documentId}':
-    post:
+    put:
       tags:
         - Content
       summary: Upsert content document
