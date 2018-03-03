@@ -1,4 +1,4 @@
-swagger: '1.0'
+swagger: '2.0'
 info:
   version: v1.2
   title: Kotori
@@ -523,6 +523,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+          schema:
+            $ref: '#/definitions/Error'
           examples:
             application/json:
               message: Document type not found.
@@ -749,6 +751,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+          schema:
+            $ref: '#/definitions/Error'
           examples:
             application/json:
               message: Document not found.
@@ -870,6 +874,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+          schema:
+            $ref: '#/definitions/Error'
           examples:
             application/json:
               message: Document not found.
