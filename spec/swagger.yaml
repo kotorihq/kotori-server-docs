@@ -688,6 +688,76 @@ paths:
       security:
         - masterKey: []      
   '/api/projects/{projectId}/content/{documentTypeId}/documents/{documentId}':
+    get:
+      tags:
+        - Content
+      summary: Get content document
+      description: |-
+        Get content document.
+
+        Readonly project key required.
+      operationId: ApiGetContentDocument
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentId
+          in: path
+          description: Content document identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: format
+          in: query
+          description: Content output format
+          type: string
+          enum: [html, md]
+          default: html
+          required: false
+      responses:
+        '200':
+          description: Content document
+          schema:
+            $ref: '#/definitions/ContentDocument'
+          examples:
+            application/json:
+              id: about-me
+              slug: about
+              meta:
+                title: "About me"
+                author: "frohikey"
+              content: Hello!
+              date: "2018-01-01T00:00:00"
+              modified: "2018-03-03T19:52:54.123154+01:00"
+              draft: false,
+              version: 1
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          examples:
+            application/json:
+              message: Document not found.
+              type: KotoriCore.Exceptions.KotoriDocumentException
+              id: imaginary-content-document
+        '500':
+          description: Internal server error
+      security:
+        - readonlyProjectKey: []
     put:
       tags:
         - Content
@@ -885,6 +955,34 @@ definitions:
         type: string
       fields:
         $ref: '#/definitions/DocumentTypeField'
+  ContentDocument:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      slug:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      meta:
+        $ref: '#/definitions/MetaField'
+      content:
+        type: string
+      date:
+        type: string
+        format: date
+      modified:
+        type: string
+        format: date
+      draft:
+        type: boolean
+      version:
+        type: integer
+        format: int64
+  MetaField:
+    type: object
+    additionalProperties:
+      type: object
   DocumentTypeField:
     type: object
     properties:
