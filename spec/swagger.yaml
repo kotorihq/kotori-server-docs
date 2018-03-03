@@ -402,7 +402,7 @@ paths:
           description: Internal server error
       security:
         - masterKey: []
-  '/api/projects/{projectId}/content/document-types':
+  '/api/projects/{projectId}/content':
     get:
       tags:
         - Content
@@ -716,7 +716,7 @@ definitions:
         type: string
     example:
       id: movie
-      url: /api/projects/my-blog/content/document-types/movie
+      url: /api/projects/my-blog/content/movie
 securityDefinitions:
   masterKey:
     name: x-master-key
