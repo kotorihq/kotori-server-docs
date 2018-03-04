@@ -726,7 +726,7 @@ paths:
           description: Content output format
           type: string
           enum: [html, md]
-          default: html
+          default: md
           required: false
       responses:
         '200':
