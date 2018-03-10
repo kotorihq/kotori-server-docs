@@ -1,0 +1,11 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": true,
+    "importedSpec": "/Users/frohikey/Projects/KotoriHq/kotori-server/swagger.json",
+    "name": "Kotori",
+    "repo": "kotorihq/kotori-server-docs",
+    "splitSpec": false,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}

@@ -1,0 +1,1086 @@
+swagger: '2.0'
+info:
+  version: 1.1.0-CI-20180303-1
+  title: Kotori
+  description: |-
+    REST API for Kotori.
+
+    It's _work in progress_ at the moment.
+  contact:
+    name: frohikey
+  license:
+    name: MIT
+    url: 'https://raw.githubusercontent.com/kotorihq/kotori-server/master/LICENSE'
+host: 'localhost:6502'
+basePath: /
+paths:
+  /api/instance:
+    get:
+      tags:
+        - Instance
+      summary: Get instance information
+      description: Just a simple method for testing purposes. It returns information about instance which you already know (if you are not drunk).
+      operationId: ApiInstanceGet
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Instance information
+          schema:
+            $ref: '#/definitions/InstanceResult'
+          examples:
+            application/json:
+              instance: master-instance
+              version: 1.1.0-CI-20180303-1
+        '500':
+          description: Internal server error
+  /api/projects:
+    get:
+      tags:
+        - Projects
+      summary: Get projects
+      description: |-
+        Gets a collection of existing projects.
+
+        Master key required.
+      operationId: ApiProjectsGet
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A collection of the projects
+          schema:
+            $ref: '#/definitions/Projects'
+          examples:
+            application/json:
+              - count: 2
+                items:
+                  - id: my-blog
+                    name: My blog
+                  - id: your-blog
+                    name: Your blog
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    post:
+      tags:
+        - Projects
+      summary: Create project
+      description: |-
+        Create a new project.
+
+        Master key required.
+      operationId: ApiProjectsPost
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: payload
+          schema:
+            $ref: '#/definitions/CreateProjectRequest'
+      responses:
+        '201':
+          description: Project created
+          schema:
+            $ref: '#/definitions/CreateProjectResult'
+          headers:
+            Location:
+              description: Project location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+  '/api/projects/{projectId}':
+    get:
+      tags:
+        - Projects
+      summary: Get project
+      description: Gets just one project.
+      operationId: ApiProjectsByProjectIdGet
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: The project
+          schema:
+            $ref: '#/definitions/Project'
+          examples:
+            application/json:
+              id: my-blog
+              name: My Blog
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    put:
+      tags:
+        - Projects
+      summary: Upsert project
+      description: |-
+        Create a new project or update an existing one.
+
+        Master key required.
+      operationId: ApiProjectsByProjectIdPut
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - in: body
+          name: payload
+          schema:
+            $ref: '#/definitions/UpsertProjectRequest'
+      responses:
+        '200':
+          description: Project updated
+        '201':
+          description: Project created
+          schema:
+            $ref: '#/definitions/CreateProjectResult'
+          headers:
+            Location:
+              description: Project location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    delete:
+      tags:
+        - Projects
+      summary: Delete project
+      description: |-
+        Delete the project. Do not be worry too much. Non empty projects cannot
+        be deleted.
+
+        Master key required.
+      operationId: ApiProjectsByProjectIdDelete
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '204':
+          description: Project deleted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+  '/api/projects/{projectId}/project-keys':
+    get:
+      tags:
+        - Projects
+      summary: Get project keys
+      description: Gets project keys.
+      operationId: ApiProjectsByProjectIdProjectKeysGet
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: A collection of the project keys
+          schema:
+            $ref: '#/definitions/ProjectKeys'
+          examples:
+            application/json:
+              - count: 2
+                items:
+                  - key: key-1
+                    isReadonly: false
+                  - key: key-2
+                    isReadonly: true
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Project not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-imaginary-blog
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    post:
+      tags:
+        - Projects
+      summary: Create project key
+      description: Creates a new project key.
+      operationId: ApiProjectsByProjectIdProjectKeysPost
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - in: body
+          name: payload
+          schema:
+            $ref: '#/definitions/CreateProjectKeyRequest'
+      responses:
+        '201':
+          description: Project key created
+          schema:
+            $ref: '#/definitions/CreateProjectKeyResult'
+          headers:
+            Location:
+              description: Project key location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+  '/api/projects/{projectId}/project-keys/{key}':
+    put:
+      tags:
+        - Projects
+      summary: Upsert project key
+      description: Create a new key or update an existing one.
+      operationId: ApiProjectsByProjectIdProjectKeysByKeyPut
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: key
+          in: path
+          description: Project key
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - in: body
+          name: payload
+          schema:
+            $ref: '#/definitions/UpsertProjectKeyRequest'
+      responses:
+        '200':
+          description: Project key updated
+        '201':
+          description: Project key created
+          schema:
+            $ref: '#/definitions/CreateProjectKeyResult'
+          headers:
+            Location:
+              description: Project key location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    delete:
+      tags:
+        - Projects
+      summary: Delete project key
+      description: Delete an existing project key.
+      operationId: ApiProjectsByProjectIdProjectKeysByKeyDelete
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+          type: string
+        - name: key
+          in: path
+          description: Key
+          required: true
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+          type: string
+      responses:
+        '204':
+          description: Project key deleted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Project key 'imaginary-project-key' not found.
+              type: KotoriCore.Exceptions.KotoriProjectException
+              identifier: my-blog
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+  '/api/projects/{projectId}/content':
+    get:
+      tags:
+        - Content
+      summary: Get content document types
+      description: |-
+        Get a collection of content document types.
+
+        Readonly/Full project key required.
+      operationId: ApiGetContentDocumentTypes
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: Content document types
+          schema:
+            $ref: '#/definitions/ContentDocumentTypes'
+          examples:
+            application/json:
+              - count: 2
+                items:
+                  - id: movie
+                    type: content
+                    fields: []
+                  - id: book
+                    type: content
+                    fields: []
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - readonlyProjectKey: []
+    post:
+      tags:
+        - Content
+      summary: Create content document type
+      description: |-
+        Create a new document type for content.
+
+        Full project key required.
+      operationId: ApiCreateContentDocumentType
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '201':
+          description: Content document type created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentTypeResult'
+          headers:
+            Location:
+              description: Content document type location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - projectKey: []
+  '/api/projects/{projectId}/content/{documentTypeId}':
+    get:
+      tags:
+        - Content
+      summary: Get content document type
+      description: |-
+        Get content document type.
+
+        Readonly project key required.
+      operationId: ApiGetContentDocumentType
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: Content document type
+          schema:
+            $ref: '#/definitions/ContentDocumentType'
+          examples:
+            application/json:
+              id: movie
+              type: content
+              fields: []
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Document type not found.
+              type: 'KotoriCore.Exceptions.KotoriDocumentTypeException,'
+              id: imaginary-content-document-type
+        '500':
+          description: Internal server error
+      security:
+        - readonlyProjectKey: []
+    put:
+      tags:
+        - Content
+      summary: Upsert content document type
+      description: |-
+        Create a new content document type or update an existing one.
+
+        Full project key required.
+      operationId: ApiUpsertContentDocumentType
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '200':
+          description: Content document type updated
+        '201':
+          description: Content document type created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentTypeResult'
+          headers:
+            Location:
+              description: Content document type location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - projectKey: []
+    delete:
+      tags:
+        - Content
+      summary: Delete content document type
+      description: |-
+        Delete the content document type. Do not be worry too much. Non empty content document types cannot
+        be deleted.
+
+        Project key required.
+      operationId: ApiDeleteContentDocumentType
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '204':
+          description: Content document type deleted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Document type not found.
+              type: KotoriCore.Exceptions.KotoriDocumentTypeException
+              identifier: my-imaginary-document-type
+        '500':
+          description: Internal server error
+      security:
+        - projectKey: []
+  '/api/projects/{projectId}/content/{documentTypeId}/documents':
+    post:
+      tags:
+        - Content
+      summary: Create content document
+      description: |-
+        Creates a new content document.
+
+        Project key required.
+      operationId: ApiCreateContentDocument
+      consumes:
+        - text/plain
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: date
+          in: query
+          description: Date
+          required: false
+          type: string
+          format: date
+        - name: draft
+          in: query
+          description: Draft
+          required: false
+          type: boolean
+        - in: body
+          name: document
+          schema:
+            type: string
+            example: |-
+              ---
+              title: I've started my little blog
+              author: none other than me
+              ---
+              Hello!
+      responses:
+        '201':
+          description: Content document created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentResult'
+          headers:
+            Location:
+              description: Content document location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+  '/api/projects/{projectId}/content/{documentTypeId}/documents/{documentId}':
+    get:
+      tags:
+        - Content
+      summary: Get content document
+      description: |-
+        Get content document.
+
+        Readonly project key required.
+      operationId: ApiGetContentDocument
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentId
+          in: path
+          description: Content document identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: format
+          in: query
+          description: Content output format
+          type: string
+          enum:
+            - html
+            - md
+          default: md
+          required: false
+      responses:
+        '200':
+          description: Content document
+          schema:
+            $ref: '#/definitions/ContentDocument'
+          examples:
+            application/json:
+              id: about-me
+              slug: about
+              meta:
+                title: About me
+                author: frohikey
+              content: Hello!
+              date: '2018-01-01T00:00:00'
+              modified: '2018-03-03T19:52:54.123154+01:00'
+              draft: false
+              version: 1
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Document not found.
+              type: KotoriCore.Exceptions.KotoriDocumentException
+              id: imaginary-content-document
+        '500':
+          description: Internal server error
+      security:
+        - readonlyProjectKey: []
+    put:
+      tags:
+        - Content
+      summary: Upsert content document
+      description: |-
+        Creates or updates the content document.
+
+        Project key required.
+      operationId: ApiUpsertContentDocument
+      consumes:
+        - text/plain
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentId
+          in: path
+          description: Content document identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: date
+          in: query
+          description: Date
+          required: false
+          type: string
+          format: date
+        - name: draft
+          in: query
+          description: Draft
+          required: false
+          type: boolean
+        - in: body
+          name: document
+          schema:
+            type: string
+            example: |-
+              ---
+              title: I've started my little blog
+              author: none other than me
+              ---
+              Yikes!
+      responses:
+        '200':
+          description: Content document updated
+        '201':
+          description: Content document created
+          schema:
+            $ref: '#/definitions/CreateContentDocumentResult'
+          headers:
+            Location:
+              description: Content document location
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+      security:
+        - masterKey: []
+    delete:
+      tags:
+        - Content
+      summary: Delete content document
+      description: |-
+        Delete the content document including all versions.
+
+        Project key required.
+      operationId: ApiDeleteContentDocument
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentTypeId
+          in: path
+          description: Content document type identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+        - name: documentId
+          in: path
+          description: Content document identifier
+          required: true
+          type: string
+          pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      responses:
+        '204':
+          description: Content document deleted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json:
+              message: Document not found.
+              type: KotoriCore.Exceptions.KotoriDocumentException
+              id: imaginary-content-document
+        '500':
+          description: Internal server error
+      security:
+        - projectKey: []
+definitions:
+  InstanceResult:
+    description: Instance result.
+    type: object
+    properties:
+      instance:
+        type: string
+      version:
+        type: string
+  CreateProjectRequest:
+    description: Create project
+    type: object
+    properties:
+      name:
+        type: string
+    example:
+      name: My blog
+  CreateProjectKeyRequest:
+    description: Create project key
+    type: object
+    properties:
+      isReadonly:
+        type: boolean
+    example:
+      isReadonly: false
+  UpsertProjectKeyRequest:
+    description: Upsert project key
+    type: object
+    properties:
+      isReadonly:
+        type: boolean
+    example:
+      isReadonly: false
+  CreateProjectKeyResult:
+    description: Create project key
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      url:
+        type: string
+    example:
+      id: one
+      url: /api/projects/my-blog/project-keys/one
+  CreateProjectResult:
+    description: Create project result
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      url:
+        type: string
+    example:
+      id: my-blog
+      url: /api/projects/my-blog
+  CreateContentDocumentResult:
+    description: Create content document result
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      url:
+        type: string
+    example:
+      id: my-blog
+      url: /api/projects/my-blog/content/movie/documents/my-fav-movie
+  Project:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      name:
+        type: string
+  Projects:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/Project'
+  UpsertProjectRequest:
+    description: Upsert project
+    type: object
+    properties:
+      name:
+        type: string
+    example:
+      name: My blog
+  ProjectKey:
+    type: object
+    properties:
+      key:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      isReadonly:
+        type: boolean
+  ProjectKeys:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/ProjectKey'
+  ContentDocumentTypes:
+    type: object
+    properties:
+      count:
+        format: int64
+        type: integer
+      items:
+        $ref: '#/definitions/ContentDocumentType'
+  ContentDocumentType:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      type:
+        type: string
+      fields:
+        $ref: '#/definitions/DocumentTypeField'
+  ContentDocument:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      slug:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      meta:
+        $ref: '#/definitions/MetaField'
+      content:
+        type: string
+      date:
+        type: string
+        format: date
+      modified:
+        type: string
+        format: date
+      draft:
+        type: boolean
+      version:
+        type: integer
+        format: int64
+  MetaField:
+    type: object
+    additionalProperties:
+      type: object
+  DocumentTypeField:
+    type: object
+    properties:
+      todo:
+        type: string
+  Error:
+    description: Error
+    type: object
+    properties:
+      message:
+        type: string
+      type:
+        type: string
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+  CreateContentDocumentTypeResult:
+    description: Create content document type result
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: '[a-z0-9]+(?:-[a-z0-9]+)*'
+      url:
+        type: string
+    example:
+      id: movie
+      url: /api/projects/my-blog/content/movie
+securityDefinitions:
+  masterKey:
+    name: x-master-key
+    in: header
+    type: apiKey
+    description: Master operations like managing projects.
+  projectKey:
+    name: x-project-key
+    in: header
+    type: apiKey
+    description: Operations in the context of one project.
+  readonlyProjectKey:
+    name: x-project-key
+    in: header
+    type: apiKey
+    description: Operations in the context of one project (readonly).
